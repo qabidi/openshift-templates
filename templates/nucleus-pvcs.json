@@ -1,0 +1,44 @@
+{
+    "kind": "PersistentVolumeClaim",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "postgresql",
+        "labels": {
+            "app": "nucleus",
+            "name": "nucleus-web",
+            "template": "nucleus"
+        }
+    },
+    "spec": {
+        "accessModes": [
+            "ReadWriteOnce"
+        ],
+        "resources": {
+            "requests": {
+                "storage": "1Gi"
+            }
+        }
+    }
+}
+{
+    "apiVersion": "v1",
+    "kind": "PersistentVolumeClaim",
+    "metadata": {
+        "labels": {
+            "app": "nucleus",
+            "name": "nucleus-web",
+            "template": "nucleus"
+        },
+        "name": "nucleus-web-staticfiles-claim"
+    },
+    "spec": {
+        "accessModes": [
+            "ReadWriteMany"
+        ],
+        "resources": {
+            "requests": {
+                "storage": "1Gi"
+            }
+        }
+    }
+}
