@@ -459,9 +459,9 @@
         },
         "template": {
           "metadata": {
-            "name": "${NAME}",
+            "name": "${NAME}-nginx",
             "labels": {
-              "name": "${NAME}"
+              "name": "${NAME}-nginx"
             }
           },
           "spec": {
