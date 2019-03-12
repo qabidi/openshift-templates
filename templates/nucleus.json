@@ -109,39 +109,6 @@
       "kind": "ImageStream",
       "metadata": {
 	"annotations": {
-          "description": "ImageStream to track docker postgres image."
-	},
-	"generation": 2,
-	"name": "postgres"
-      },
-      "spec": {
-	"lookupPolicy": {
-	  "local": false
-	},
-	"tags": [
-	  {
-	    "annotations": null,
-	    "from": {
-	      "kind": "DockerImage",
-	      "name": "docker.io/postgres:10"
-	    },
-	    "generation": 2,
-	    "importPolicy": {
-              "scheduled": true
-            },
-	    "name": "10",
-	    "referencePolicy": {
-	      "type": "Source"
-	    }
-	  }
-	]
-      }
-    },
-    {
-      "apiVersion": "image.openshift.io/v1",
-      "kind": "ImageStream",
-      "metadata": {
-	"annotations": {
           "description": "ImageStream to track docker nginx image."
 	},
 	"generation": 2,
@@ -754,7 +721,7 @@
       "name": "POSTGRESQL_VERSION",
       "displayName": "Version of PostgreSQL Image",
       "description": "Version of PostgreSQL image to be used (10 or latest).",
-      "value": "10",
+      "value": "latest",
       "required": true
     },
     {
