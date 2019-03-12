@@ -129,7 +129,7 @@
 	    "importPolicy": {
               "scheduled": true
             },
-	    "name": "stable",
+	    "name": "10",
 	    "referencePolicy": {
 	      "type": "Source"
 	    }
