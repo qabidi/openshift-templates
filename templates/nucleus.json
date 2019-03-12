@@ -55,7 +55,7 @@
           }
         ],
         "selector": {
-          "name": "${NAME}"
+          "name": "${NAME}-nginx"
         }
       }
     },
@@ -455,7 +455,7 @@
         ],
         "replicas": 1,
         "selector": {
-          "name": "${NAME}"
+          "name": "${NAME}-nginx"
         },
         "template": {
           "metadata": {
