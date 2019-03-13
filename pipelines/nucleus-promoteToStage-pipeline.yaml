@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+    labels:
+        app: nucleus-promote-stage-pipeline
+    name: nucleus-promote-stage-pipeline
+spec:
+    source:
+        git:
+            ref: master
+            uri: https://github.com/adri8n/openshift-templates.git
+    strategy:
+        jenkinsPipelineStrategy:
+            jenkinsfilePath: pipelines/nucleus-promoteToStage.Jenkinsfile
+        type: JenkinsPipeline
+    triggers:
+        - github:
+            secret: secret
+          type: GitHub
+        - generic:
+            secret: secret
+          type: Generic
+        - bitbucket:
+            secret: secret
+          type: Bitbucket
