@@ -128,7 +128,7 @@ pipeline {
                             nucleus.delete('--ignore-not-found')
                             try {
                                 openshift.selector('secrets', 'nucleus-web').delete()
-                            } catch(Exception e) {
+                            } catch(Exception ex) {
                                 echo "error, probably doesn't exist ${ex}"
                             }
                             openshift.create(secrets)

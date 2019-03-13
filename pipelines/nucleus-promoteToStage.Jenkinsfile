@@ -31,7 +31,11 @@ pipeline {
                         }
                         openshift.withProject(stageProjectName) {
                             nucleus.delete('--ignore-not-found')
-                            openshift.selector('secrets', 'nucleus-web').delete()
+                            try {
+                                openshift.selector('secrets', 'nucleus-web').delete()
+                            } catch(Exception ex) {
+                                echo "error, probably didn't exist ${ex}"
+                            }
                             openshift.create(secrets)
                             openshift.create(services)
                             try {
