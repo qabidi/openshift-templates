@@ -48,7 +48,11 @@ pipeline {
                                 echo "error, probably already exists ${ex}"
                             }
                             openshift.create(objs)
-                            openshift.selector("service", "nucleus-web-nginx").expose()
+                            try {
+                                openshift.selector("service", "nucleus-web-nginx").expose()
+                            } catch(Exception ex) {
+                                echo "Expose already exists: ${ex}"
+                            }
                             openshift.selector("dc", appName).related('pods').untilEach(1) {
                                 return (it.object().status.phase == "Running")
                             }
