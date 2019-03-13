@@ -129,17 +129,25 @@ pipeline {
                             try {
                                 openshift.selector('secrets', 'nucleus-web').delete()
                             } catch(Exception ex) {
-                                echo "error, probably doesn't exist ${ex}"
+                                echo "error, probably didn't exist ${ex}"
                             }
                             openshift.create(secrets)
-                            openshift.create(services)
+                            try {
+                                openshift.create(services)
+                            } catch(Exception ex) {
+                                echo "error, probably already exists ${ex}"
+                            }
                             try {
                                 openshift.create('https://raw.githubusercontent.com/adri8n/openshift-templates/master/templates/nucleus-pvcs.json')
                             } catch(Exception ex) {
                                 echo "error, probably already exists ${ex}"
                             }
                             openshift.create(objs)
-                            openshift.selector("service", "nucleus-web-nginx").expose()
+                            try {
+                                openshift.selector("service", "nucleus-web-nginx").expose()
+                            } catch(Exception ex) {
+                                echo "Expose already exists: ${ex}"
+                            }
                             openshift.selector("dc", appName).related('pods').untilEach(1) {
                                 return (it.object().status.phase == "Running")
                             }
