@@ -37,7 +37,11 @@ pipeline {
                                 echo "error, probably didn't exist ${ex}"
                             }
                             openshift.create(secrets)
-                            openshift.create(services)
+                            try {
+                                openshift.create(services)
+                            } catch(Exception ex) {
+                                echo "error, probably already exists ${ex}"
+                            }
                             try {
                                 openshift.create('https://raw.githubusercontent.com/adri8n/openshift-templates/master/templates/nucleus-pvcs.json')
                             } catch(Exception ex) {
