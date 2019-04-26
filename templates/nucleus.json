@@ -168,6 +168,12 @@
         }
       },
       "spec": {
+        "resources": {
+          "requests": {
+            "cpu": "100m",
+            "memory": "1Gi"
+          }
+        },
         "source": {
           "type": "Git",
           "git": {
@@ -229,6 +235,12 @@
         }
       },
       "spec": {
+        "resources": {
+          "requests": {
+            "cpu": "100m",
+            "memory": "1Gi"
+          }
+        },
         "source": {
           "type": "Git",
           "git": {
