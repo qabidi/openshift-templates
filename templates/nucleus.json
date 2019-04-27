@@ -169,9 +169,13 @@
       },
       "spec": {
         "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "1Gi"
+          }
           "requests": {
-            "cpu": "100m",
-            "memory": "256Mi"
+            "cpu": "900m",
+            "memory": "1Gi"
           }
         },
         "source": {
@@ -236,9 +240,13 @@
       },
       "spec": {
         "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "1Gi"
+          },
           "requests": {
-            "cpu": "100m",
-            "memory": "256Mi"
+            "cpu": "900m",
+            "memory": "1Gi"
           }
         },
         "source": {
@@ -421,6 +429,11 @@
                 ],
                 "resources": {
                   "limits": {
+                    "cpu": "1",
+                    "memory": "${MEMORY_LIMIT}"
+                  },
+                  "requests": {
+                    "cpu": "900m",
                     "memory": "${MEMORY_LIMIT}"
                   }
                 }
@@ -515,6 +528,11 @@
                 },
                 "resources": {
                   "limits": {
+                    "cpu": "1",
+                    "memory": "${MEMORY_LIMIT}"
+                  },
+                  "requests": {
+                    "cpu": "900m",
                     "memory": "${MEMORY_LIMIT}"
                   }
                 }
@@ -694,6 +712,11 @@
                 },
                 "resources": {
                   "limits": {
+                    "cpu": "1",
+                    "memory": "${MEMORY_POSTGRESQL_LIMIT}"
+                  },
+                  "requests": {
+                    "cpu": "900m",
                     "memory": "${MEMORY_POSTGRESQL_LIMIT}"
                   }
                 }
