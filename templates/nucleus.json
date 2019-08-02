@@ -174,8 +174,8 @@
             "memory": "1Gi"
           },
           "requests": {
-            "cpu": "300m",
-            "memory": "256Mi"
+            "cpu": "350m",
+            "memory": "1Gi"
           }
         },
         "source": {
@@ -245,8 +245,8 @@
             "memory": "1Gi"
           },
           "requests": {
-            "cpu": "100m",
-            "memory": "128Mi"
+            "cpu": "250m",
+            "memory": "1Gi"
           }
         },
         "source": {
@@ -433,7 +433,7 @@
                     "memory": "${MEMORY_LIMIT}"
                   },
                   "requests": {
-                    "cpu": "400m",
+                    "cpu": "350m",
                     "memory": "${MEMORY_LIMIT}"
                   }
                 }
@@ -532,7 +532,7 @@
                     "memory": "${MEMORY_LIMIT}"
                   },
                   "requests": {
-                    "cpu": "300m",
+                    "cpu": "250m",
                     "memory": "${MEMORY_LIMIT}"
                   }
                 }
@@ -768,7 +768,7 @@
       "displayName": "Memory Limit (PostgreSQL)",
       "required": true,
       "description": "Maximum amount of memory the PostgreSQL container can use.",
-      "value": "1Gi"
+      "value": "2Gi"
     },
     {
       "name": "VOLUME_CAPACITY",
