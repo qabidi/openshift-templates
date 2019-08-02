@@ -174,8 +174,8 @@
             "memory": "1Gi"
           },
           "requests": {
-            "cpu": "900m",
-            "memory": "1Gi"
+            "cpu": "300m",
+            "memory": "256Mi"
           }
         },
         "source": {
@@ -245,8 +245,8 @@
             "memory": "1Gi"
           },
           "requests": {
-            "cpu": "900m",
-            "memory": "1Gi"
+            "cpu": "100m",
+            "memory": "128Mi"
           }
         },
         "source": {
@@ -433,7 +433,7 @@
                     "memory": "${MEMORY_LIMIT}"
                   },
                   "requests": {
-                    "cpu": "900m",
+                    "cpu": "400m",
                     "memory": "${MEMORY_LIMIT}"
                   }
                 }
@@ -532,7 +532,7 @@
                     "memory": "${MEMORY_LIMIT}"
                   },
                   "requests": {
-                    "cpu": "900m",
+                    "cpu": "300m",
                     "memory": "${MEMORY_LIMIT}"
                   }
                 }
@@ -716,7 +716,7 @@
                     "memory": "${MEMORY_POSTGRESQL_LIMIT}"
                   },
                   "requests": {
-                    "cpu": "900m",
+                    "cpu": "500m",
                     "memory": "${MEMORY_POSTGRESQL_LIMIT}"
                   }
                 }
