@@ -430,11 +430,11 @@
                 "resources": {
                   "limits": {
                     "cpu": "1",
-                    "memory": "${MEMORY_LIMIT}"
+                    "memory": "${NUCLEUS_MEMORY_LIMIT}"
                   },
                   "requests": {
                     "cpu": "350m",
-                    "memory": "${MEMORY_LIMIT}"
+                    "memory": "${NUCLEUS_MEMORY_REQUEST}"
                   }
                 }
               }
@@ -529,11 +529,11 @@
                 "resources": {
                   "limits": {
                     "cpu": "1",
-                    "memory": "${MEMORY_LIMIT}"
+                    "memory": "${NGINX_MEMORY_LIMIT}"
                   },
                   "requests": {
                     "cpu": "250m",
-                    "memory": "${MEMORY_LIMIT}"
+                    "memory": "${NGINX_MEMORY_REQUEST}"
                   }
                 }
               }
@@ -713,11 +713,11 @@
                 "resources": {
                   "limits": {
                     "cpu": "1",
-                    "memory": "${MEMORY_POSTGRESQL_LIMIT}"
+                    "memory": "${POSTGRESQL_MEMORY_LIMIT}"
                   },
                   "requests": {
-                    "cpu": "500m",
-                    "memory": "${MEMORY_POSTGRESQL_LIMIT}"
+                    "cpu": "400m",
+                    "memory": "${POSTGRESQL_MEMORY_REQUEST}"
                   }
                 }
               }
@@ -757,18 +757,46 @@
       "required": true
     },
     {
-      "name": "MEMORY_LIMIT",
-      "displayName": "Memory Limit",
+      "name": "NUCLEUS_MEMORY_LIMIT",
+      "displayName": "Nucleus Memory Limit",
       "required": true,
       "description": "Maximum amount of memory the Django container can use.",
       "value": "1Gi"
     },
     {
-      "name": "MEMORY_POSTGRESQL_LIMIT",
-      "displayName": "Memory Limit (PostgreSQL)",
+      "name": "NUCLEUS_MEMORY_REQUEST",
+      "displayName": "Memory Request (Nucleus/Django)",
       "required": true,
-      "description": "Maximum amount of memory the PostgreSQL container can use.",
-      "value": "2Gi"
+      "description": "Requested amount of memory the PostgreSQL container can use.",
+      "value": "1Gi"
+    },
+    {
+      "name": "NGINX_MEMORY_LIMIT",
+      "displayName": "NGINX Memory Limit",
+      "required": true,
+      "description": "Maximum amount of memory the nginx container can use.",
+      "value": "1Gi"
+    },
+    {
+      "name": "NGINX_MEMORY_REQUEST",
+      "displayName": "Memory Request (NGINX)",
+      "required": true,
+      "description": "Requested amount of memory the nginx container can use.",
+      "value": "512Mi"
+    },
+    {
+      "name": "POSTGRESQL_MEMORY_LIMIT",
+      "displayName": "Memory Limit",
+      "required": true,
+      "description": "Maximum amount of memory the Django container can use.",
+      "value": "3Gi"
+    },
+    {
+      "name": "POSTGRESQL_MEMORY_REQUEST",
+      "displayName": "Memory Request (PostgreSQL)",
+      "required": true,
+      "description": "Requested amount of memory the PostgreSQL container can use.",
+      "value": "3Gi"
     },
     {
       "name": "VOLUME_CAPACITY",
