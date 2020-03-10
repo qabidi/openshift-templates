@@ -17,8 +17,8 @@
   },
   "message": "The following service(s) have been created in your project: ${NAME}, ${DATABASE_SERVICE_NAME}.\n\nFor more information about using this template, including OpenShift considerations, see https://goclouddevops.visualstudio.com/SoftwareDefinedNetwork/_git/nucleus.",
   "labels": {
-      "template": "nucleus",
-      "app": "nucleus"
+    "template": "nucleus",
+    "app": "nucleus"
   },
   "objects": [
     {
@@ -26,14 +26,37 @@
       "apiVersion": "v1",
       "metadata": {
         "name": "${NAME}",
-	"labels": {
-	  "name": "${NAME}"
-	}
+        "labels": {
+          "name": "${NAME}"
+        }
       },
-      "stringData" : {
-        "database-user" : "${DATABASE_USER}",
-        "database-password" : "${DATABASE_PASSWORD}",
-        "django-secret-key" : "${DJANGO_SECRET_KEY}"
+      "stringData": {
+        "database-user": "${DATABASE_USER}",
+        "database-password": "${DATABASE_PASSWORD}",
+        "django-secret-key": "${DJANGO_SECRET_KEY}"
+      }
+    },
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${NAME}-oauth2",
+        "annotations": {
+          "description": "Service for oauth2 proxy",
+          "service.alpha.openshift.io/dependencies": "[{\"name\": \"${NAME}-oauth2\", \"kind\": \"Service\"}]"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "oauth2",
+            "port": 4180,
+            "targetPort": 4180
+          }
+        ],
+        "selector": {
+          "name": "${NAME}-oauth2"
+        }
       }
     },
     {
@@ -108,33 +131,66 @@
       "apiVersion": "image.openshift.io/v1",
       "kind": "ImageStream",
       "metadata": {
-	"annotations": {
-          "description": "ImageStream to track docker nginx image."
-	},
-	"generation": 2,
-	"name": "nginx"
+        "annotations": {
+          "description": "ImageStream to track docker oauth2 image."
+        },
+        "generation": 2,
+        "name": "oauth2-proxy"
       },
       "spec": {
-	"lookupPolicy": {
-	  "local": false
-	},
-	"tags": [
-	  {
-	    "annotations": null,
-	    "from": {
-	      "kind": "DockerImage",
-	      "name": "docker.io/nginx:stable"
-	    },
-	    "generation": 2,
-	    "importPolicy": {
+        "lookupPolicy": {
+          "local": false
+        },
+        "tags": [
+          {
+            "annotations": null,
+            "from": {
+              "kind": "DockerImage",
+              "name": "bitnami/oauth2-proxy:latest"
+            },
+            "generation": 2,
+            "importPolicy": {
               "scheduled": true
             },
-	    "name": "stable",
-	    "referencePolicy": {
-	      "type": "Source"
-	    }
-	  }
-	]
+            "name": "latest",
+            "referencePolicy": {
+              "type": "Source"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "image.openshift.io/v1",
+      "kind": "ImageStream",
+      "metadata": {
+        "annotations": {
+          "description": "ImageStream to track docker nginx image."
+        },
+        "generation": 2,
+        "name": "nginx"
+      },
+      "spec": {
+        "lookupPolicy": {
+          "local": false
+        },
+        "tags": [
+          {
+            "annotations": null,
+            "from": {
+              "kind": "DockerImage",
+              "name": "docker.io/nginx:stable"
+            },
+            "generation": 2,
+            "importPolicy": {
+              "scheduled": true
+            },
+            "name": "stable",
+            "referencePolicy": {
+              "type": "Source"
+            }
+          }
+        ]
       }
     },
     {
@@ -196,12 +252,12 @@
             },
             "env": [
               {
-                  "name": "PIP_INDEX_URL",
-                  "value": "${PIP_INDEX_URL}"
+                "name": "PIP_INDEX_URL",
+                "value": "${PIP_INDEX_URL}"
               },
               {
-                  "name": "ENABLE_PIPENV",
-                  "value": "1"
+                "name": "ENABLE_PIPENV",
+                "value": "1"
               }
             ]
           }
@@ -306,9 +362,16 @@
             "post": {
               "failurePolicy": "Abort",
               "execNewPod": {
-                "command": ["python", "manage.py", "collectstatic", "--noinput"],
+                "command": [
+                  "python",
+                  "manage.py",
+                  "collectstatic",
+                  "--noinput"
+                ],
                 "container": "${NAME}",
-                "volumes": [ "${NAME}-staticfiles" ]
+                "volumes": [
+                  "${NAME}-staticfiles"
+                ]
               }
             }
           }
@@ -398,18 +461,18 @@
                   {
                     "name": "DATABASE_USER",
                     "valueFrom": {
-                      "secretKeyRef" : {
-                        "name" : "${NAME}",
-                        "key" : "database-user"
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "database-user"
                       }
                     }
                   },
                   {
                     "name": "DATABASE_PASSWORD",
                     "valueFrom": {
-                      "secretKeyRef" : {
-                        "name" : "${NAME}",
-                        "key" : "database-password"
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "database-password"
                       }
                     }
                   },
@@ -420,9 +483,9 @@
                   {
                     "name": "DJANGO_SECRET_KEY",
                     "valueFrom": {
-                      "secretKeyRef" : {
-                        "name" : "${NAME}",
-                        "key" : "django-secret-key"
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "django-secret-key"
                       }
                     }
                   }
@@ -435,6 +498,142 @@
                   "requests": {
                     "cpu": "350m",
                     "memory": "${NUCLEUS_MEMORY_REQUEST}"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "kind": "DeploymentConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${NAME}-oauth2",
+        "annotations": {
+          "description": "Defines how to deploy the oauth2 proxy server",
+          "template.alpha.openshift.io/wait-for-ready": "true"
+        }
+      },
+      "spec": {
+        "strategy": {
+          "type": "Recreate"
+        },
+        "triggers": [
+          {
+            "type": "ImageChange",
+            "imageChangeParams": {
+              "automatic": true,
+              "containerNames": [
+                "nucleus-oauth2"
+              ],
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "oauth2-proxy:latest"
+              }
+            }
+          },
+          {
+            "type": "ConfigChange"
+          }
+        ],
+        "replicas": 1,
+        "selector": {
+          "name": "${NAME}-oauth2"
+        },
+        "template": {
+          "metadata": {
+            "name": "${NAME}-oauth2",
+            "labels": {
+              "name": "${NAME}-oauth2"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "nucleus-oauth2",
+                "image": " ",
+                "ports": [
+                  {
+                    "containerPort": 4180
+                  }
+                ],
+                "env": [
+                  {
+                    "name": "OAUTH2_PROXY_COOKIE_SECRET",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "oauth2-cookie-secret",
+                        "key": "cookie-secret"
+                      }
+                    }
+                  },
+                  {
+                    "name": "OAUTH2_PROXY_CLIENT_SECRET",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "oauth2-client-secret",
+                        "key": "client-secret"
+                      }
+                    }
+                  },
+                  {
+                    "name": "OAUTH2_PROXY_CLIENT_ID",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "oauth2-client-id",
+                        "key": "client-id"
+                      }
+                    }
+                  },
+                  {
+                    "name": "OAUTH2_PROXY_EMAIL_DOMAINS",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "oauth2-email-domains",
+                        "key": "email-domains"
+                      }
+                    }
+                  },
+                  {
+                    "name": "OAUTH2_PROXY_PROVIDER",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "oauth2-proxy-provider",
+                        "key": "proxy-provider"
+                      }
+                    }
+                  },
+                  {
+                    "name": "OAUTH2_PROXY_GCP_HEALTHCHECKS",
+                    "value": "true"
+                  }
+                ],
+                "readinessProbe": {
+                  "timeoutSeconds": 3,
+                  "initialDelaySeconds": 3,
+                  "httpGet": {
+                    "path": "/readiness_check",
+                    "port": 4180
+                  }
+                },
+                "livenessProbe": {
+                  "timeoutSeconds": 3,
+                  "initialDelaySeconds": 30,
+                  "httpGet": {
+                    "path": "/liveness_check",
+                    "port": 4180
+                  }
+                },
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "${OAUTH2_MEMORY_LIMIT}"
+                  },
+                  "requests": {
+                    "cpu": "250m",
+                    "memory": "${OAUTH2_MEMORY_REQUEST}"
                   }
                 }
               }
@@ -547,9 +746,9 @@
       "apiVersion": "v1",
       "metadata": {
         "name": "${DATABASE_SERVICE_NAME}",
-	"labels": {
-	  "name": "${NAME}"
-	}
+        "labels": {
+          "name": "${NAME}"
+        }
       },
       "spec": {
         "accessModes": [
@@ -567,9 +766,9 @@
       "apiVersion": "v1",
       "metadata": {
         "name": "${NAME}-staticfiles-claim",
-	"labels": {
-	  "name": "${NAME}"
-	}
+        "labels": {
+          "name": "${NAME}"
+        }
       },
       "spec": {
         "accessModes": [
@@ -670,18 +869,18 @@
                   {
                     "name": "POSTGRESQL_USER",
                     "valueFrom": {
-                      "secretKeyRef" : {
-                        "name" : "${NAME}",
-                        "key" : "database-user"
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "database-user"
                       }
                     }
                   },
                   {
                     "name": "POSTGRESQL_PASSWORD",
                     "valueFrom": {
-                      "secretKeyRef" : {
-                        "name" : "${NAME}",
-                        "key" : "database-password"
+                      "secretKeyRef": {
+                        "name": "${NAME}",
+                        "key": "database-password"
                       }
                     }
                   },
@@ -700,14 +899,19 @@
                   "timeoutSeconds": 1,
                   "initialDelaySeconds": 5,
                   "exec": {
-                    "command": [ "/usr/libexec/check-container" ]
+                    "command": [
+                      "/usr/libexec/check-container"
+                    ]
                   }
                 },
                 "livenessProbe": {
                   "timeoutSeconds": 10,
                   "initialDelaySeconds": 120,
                   "exec": {
-                    "command": [ "/usr/libexec/check-container", "--live" ]
+                    "command": [
+                      "/usr/libexec/check-container",
+                      "--live"
+                    ]
                   }
                 },
                 "resources": {
@@ -771,6 +975,20 @@
       "value": "1Gi"
     },
     {
+      "name": "OAUTH2_MEMORY_LIMIT",
+      "displayName": "oauth2-proxy Memory Limit",
+      "required": true,
+      "description": "Maximum amount of memory the oauth2-proxy container can use.",
+      "value": "1Gi"
+    },
+    {
+      "name": "OAUTH2_MEMORY_REQUEST",
+      "displayName": "Memory Request (oauth2-proxy)",
+      "required": true,
+      "description": "Requested amount of memory the oauth2-proxy container can use.",
+      "value": "128Mi"
+    },
+    {
       "name": "NGINX_MEMORY_LIMIT",
       "displayName": "NGINX Memory Limit",
       "required": true,
@@ -796,7 +1014,7 @@
       "displayName": "Memory Request (PostgreSQL)",
       "required": true,
       "description": "Requested amount of memory the PostgreSQL container can use.",
-      "value": "3Gi"
+      "value": "256Mi"
     },
     {
       "name": "VOLUME_CAPACITY",
