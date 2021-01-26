@@ -10,8 +10,8 @@
       "iconClass": "icon-python",
       "openshift.io/long-description": "This template deploys gunicorn, django, nucleus and a postgres database.",
       "openshift.io/provider-display-name": "ontario.ca",
-      "openshift.io/documentation-url": "https://goclouddevops.visualstudio.com/VMware/_git/OPCSWP",
-      "openshift.io/support-url": "https://goclouddevops.visualstudio.com/VMware/_git/OPCSWP",
+      "openshift.io/documentation-url": "https://goclouddevops.visualstudio.com/VMware/_git/OPCSWP/",
+      "openshift.io/support-url": "https://goclouddevops.visualstudio.com/VMware/_git/OPCSWP/",
       "template.openshift.io/bindable": "false"
     }
   },
