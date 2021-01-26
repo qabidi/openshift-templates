@@ -281,7 +281,7 @@
               "secret": "${GITHUB_WEBHOOK_SECRET}"
             }
           }
-        ],
+        ]
       }
     },
     {
